@@ -1,6 +1,11 @@
 // @ts-check
 let gameLoopId;
 
+let laserSound = document.getElementById('laser-shoot');
+let explosionSound = document.getElementById('explosion');
+let victorySound = document.getElementById('victory');
+let defeatedSound = document.getElementById('defeated');
+
 class EventEmitter {
   constructor() {
     this.listeners = {};
@@ -62,7 +67,8 @@ class Hero extends GameObject {
   fire() {
     gameObjects.push(new Laser(this.x + 45, this.y - 10));
     this.cooldown = 400;
-
+	// @ts-ignore
+	laserSound.play();
     let id = setInterval(() => {
       if (this.cooldown > 0) {
         this.cooldown -= 100;
@@ -231,6 +237,7 @@ function updateGameObjects() {
   enemies.forEach((enemy) => {
     const heroRect = hero.rectFromGameObject();
     if (intersectRect(heroRect, enemy.rectFromGameObject())) {
+      // @ts-ignore
       eventEmitter.emit(Messages.COLLISION_ENEMY_HERO, { enemy });
     }
   });
@@ -238,6 +245,7 @@ function updateGameObjects() {
   lasers.forEach((l) => {
     enemies.forEach((m) => {
       if (intersectRect(l.rectFromGameObject(), m.rectFromGameObject())) {
+        // @ts-ignore
         eventEmitter.emit(Messages.COLLISION_ENEMY_LASER, {
           first: l,
           second: m,
@@ -285,7 +293,8 @@ function initGame() {
     first.dead = true;
     second.dead = true;
     hero.incrementPoints();
-
+	// @ts-ignore
+	explosionSound.play();
     if (isEnemyDead()) {
       eventEmitter.emit(Messages.GAME_END_WIN);
     }
@@ -305,10 +314,14 @@ function initGame() {
   });
 
   eventEmitter.on(Messages.GAME_END_LOSS, () => {
+	// @ts-ignore
+	defeatedSound.play();
     endGame(false);
   });
 
   eventEmitter.on(Messages.GAME_END_WIN, () => {
+	// @ts-ignore
+	victorySound.play();
     endGame(true);
   });
 
@@ -381,6 +394,7 @@ const resetGame = () => {
 
 window.onload = async () => {
   canvas = document.getElementById("canvas");
+  // @ts-ignore
   ctx = canvas.getContext("2d");
   heroImg = await loadTexture("assets/player.png");
   enemyImg = await loadTexture("assets/enemyShip.png");
