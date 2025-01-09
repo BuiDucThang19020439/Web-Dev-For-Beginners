@@ -55,7 +55,7 @@ class Hero extends GameObject {
 	}
 	fire() {
 		gameObjects.push(new Laser(this.x + 45, this.y - 10));
-		this.cooldown = 500;
+		this.cooldown = 400;
 
 		let id = setInterval(() => {
 			if (this.cooldown > 0) {
@@ -64,7 +64,7 @@ class Hero extends GameObject {
 					clearInterval(id);
 				}
 			}
-		}, 200);
+		}, 100);
 	}
 	canFire() {
 		return this.cooldown === 0;
@@ -87,12 +87,12 @@ class Enemy extends GameObject {
 		this.type = 'Enemy';
 		let id = setInterval(() => {
 			if (this.y < canvas.height - this.height) {
-				this.y += 5;
+				this.y += 4;
 			} else {
 				console.log('Stopped at', this.y);
 				clearInterval(id);
 			}
-		}, 300);
+		}, 320);
 	}
 }
 
@@ -104,7 +104,7 @@ class Laser extends GameObject {
 		this.img = laserImg;
 		let id = setInterval(() => {
 			if (this.y > 0) {
-				this.y -= 15;
+				this.y -= 25;
 			} else {
 				this.dead = true;
 				clearInterval(id);
@@ -236,19 +236,19 @@ function initGame() {
 	createHero();
 
 	eventEmitter.on(Messages.KEY_EVENT_UP, () => {
-		hero.y -= 5;
+		hero.y -= 10;
 	});
 
 	eventEmitter.on(Messages.KEY_EVENT_DOWN, () => {
-		hero.y += 5;
+		hero.y += 10;
 	});
 
 	eventEmitter.on(Messages.KEY_EVENT_LEFT, () => {
-		hero.x -= 20;
+		hero.x -= 25;
 	});
 
 	eventEmitter.on(Messages.KEY_EVENT_RIGHT, () => {
-		hero.x += 20;
+		hero.x += 25;
 	});
 
 	eventEmitter.on(Messages.KEY_EVENT_SPACE, () => {
@@ -282,7 +282,7 @@ function drawLife() {
 
 function drawPoints() {
 	ctx.font = '30px Arial';
-	ctx.fillStyle = 'red';
+	ctx.fillStyle = 'white';
 	ctx.textAlign = 'left';
 	drawText('Points: ' + hero.points, 10, canvas.height - 20);
 }
