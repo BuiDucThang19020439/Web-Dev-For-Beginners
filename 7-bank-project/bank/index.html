@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank App</title>
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <div id="app">Loading...</div>
+
+    <!-- login page -->
+    <template id="login">
+        <h1>Bank App</h1>
+        <section>
+            <a href="/dashboard" onclick="onLinkClick(event)">Login</a>
+        </section>
+    </template>
+
+
+    <!-- dashboard -->
+    <template id="dashboard">
+        <header>
+            <h1>Bank App</h1>
+            <a href="/login" onclick="onLinkClick(event)">Logout</a>
+            <a href="/credit" onclick="onLinkClick(event)">credit</a>
+        </header>
+        <section>Balance: 100$</section>
+        <section>
+            <h2>Transactions</h2>
+            <table>
+                <thead>
+                    <tr>Date</tr>
+                    <tr>Object</tr>
+                    <tr>Amount</tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </template>
+
+    <template id="credit">
+        <header>
+            <h1>Credit</h1>
+            <a href="/dashboard" onclick="onLinkClick(event)">Dashboard</a>
+            <a href="/login" onclick="onLinkClick(event)">Logout</a>
+        </header>
+        <section>
+            <p>Bùi Đức Thắng</p>
+            <p>Email: feika@gmail.com</p>
+        </section>
+    </template>
+</body>
+
+</html>
