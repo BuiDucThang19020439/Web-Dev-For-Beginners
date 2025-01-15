@@ -68,22 +68,23 @@
         <span>Banking</span>
       </header>
       
-      <section class="balance">
-        <h3 id="description"></h3>
-        <div>
-          <h2>Balance: </h>
-          <span id="balance"></span><span id="currency"></span>
+      <section class="balance px-3">
+        <div class="balance-currency">
+          <div id="description"></div>
+          <span>Số dư: </span>
+          <span id="balance"></span>
+          <span id="currency"></span>
         </div>
+        <button type="button" class="btn btn-outline-secondary" onclick="logout()">Đăng Xuất</button>
       </section>
       <section class="dashboard-content m-3">
-        <h3 class="dashboard-content-title">Transactions</h3>
+        <h3 class="dashboard-content-title">Lịch sử giao dịch</h3>
         <table class="table table-striped">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">First</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+              <th scope="col">Thời gian</th>
+              <th scope="col">Vật phẩm</th>
+              <th scope="col">Giá trị</th>
             </tr>
           </thead>
           <tbody id="transactions"></tbody>
@@ -95,7 +96,6 @@
 
   <template id="transaction">
     <tr>
-      <th scope="row">#</th>
       <td></td>
       <td></td>
       <td></td>

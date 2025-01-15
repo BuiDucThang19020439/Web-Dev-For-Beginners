@@ -168,6 +168,10 @@ function createTransactionRow(transaction) {
   return transactionRow;
 }
 
+const logout = () => {
+  navigate("/login");
+}
+
 //Đảm bảo template dc gọi khi lịch sử trình duyệt thay đổi
 function init() {
   window.onpopstate = () => updateRoute();

@@ -106,7 +106,15 @@ form#loginForm {
 
 .balance {
   background-color: var(--background-accent);
-  text-align: center;
+  /* text-align: center; */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.balance-currency {
+  font-size: x-large;
+  font-weight: 750;
+  color: var(--primary);
 }
 
 .dashboard-content {
