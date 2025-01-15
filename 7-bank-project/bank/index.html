@@ -14,10 +14,10 @@
 
   <!-- login page -->
   <template id="login">
-    <div class="login-register-background">
-      <header class="login-title">
+    <div class="page-background">
+      <header class="logo-title">
         <span>Squirrel</span>
-        <img class="login-logo" src="./logo.svg" alt="Squirrel Banking Logo">
+        <img class="logo" src="./logo.svg" alt="Squirrel Banking Logo">
         <span>Banking</span>
       </header>
 
@@ -25,14 +25,15 @@
         <!-- form đăng nhập-->
         <form id="loginForm" action="javascript:login()">
           <h3>ĐĂNG NHẬP</h3>
-          <div class="mb-3">
+          <div>
             <label for="username" class="form-label">Username</label>
             <input id="username" class="form-control" name="user" type="text" maxlength="20" required />
+            <div id="loginError" class="mt-2" role="alert"></div>
           </div>
-          <button type="submit" class="btn btn-primary">Đăng nhập</button>
-          </form>
-          
-          <!-- form đăng ký -->
+          <button type="submit" class="btn btn-primary mt-3">Đăng nhập</button>
+        </form>
+
+        <!-- form đăng ký -->
         <form id="registerForm" action="javascript:register()">
           <h3>ĐĂNG KÝ</h3>
           <div class="mb-3">
@@ -45,11 +46,12 @@
           </div>
           <div class="mb-3">
             <label for="description" class="form-label">Description</label>
-            <input id="description" class="form-control" name="description" type="text" maxlength="50"/>
+            <input id="description" class="form-control" name="description" type="text" maxlength="50" />
           </div>
           <div class="mb-3">
             <label for="balance" class="form-label">Current balance</label>
             <input id="balance" class="form-control" name="balance" type="number" value="0" />
+            <div id="registerError" class="mt-2" role="alert"></div>
           </div>
           <button type="submit" class="btn btn-primary">Đăng ký</button>
         </form>
@@ -59,23 +61,45 @@
 
   <!-- dashboard -->
   <template id="dashboard">
-    <header>
-      <h2>Bank App</h2>
-      <a href="/login" onclick="onLinkClick(event)">Logout</a>
-      <a href="/credit" onclick="onLinkClick(event)">credit</a>
-    </header>
-    <section>Balance: 100$</section>
-    <section>
-      <h3>Transactions</h3>
-      <table>
-        <thead>
-          <tr>Date</tr>
-          <tr>Object</tr>
-          <tr>Amount</tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
+    <div class="page-background">
+      <header class="logo-title">
+        <span>Squirrel</span>
+        <img class="logo" src="./logo.svg" alt="Squirrel Banking Logo">
+        <span>Banking</span>
+      </header>
+      
+      <section class="balance">
+        <h3 id="description"></h3>
+        <div>
+          <h2>Balance: </h>
+          <span id="balance"></span><span id="currency"></span>
+        </div>
+      </section>
+      <section class="dashboard-content m-3">
+        <h3 class="dashboard-content-title">Transactions</h3>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">Handle</th>
+            </tr>
+          </thead>
+          <tbody id="transactions"></tbody>
+        </table>
+      </section>
+
+    </div>
+  </template>
+
+  <template id="transaction">
+    <tr>
+      <th scope="row">#</th>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
   </template>
 
   <template id="credit">
