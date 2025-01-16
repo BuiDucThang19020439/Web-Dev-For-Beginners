@@ -1,10 +1,13 @@
 const baseUrl = "http://localhost:5000/api/";
-let account = null;
+const storageKey = 'savedAccount';
+let state = Object.freeze({
+  account: null,
+});
 
 // danh sách các route
 const routes = {
   "/login": { templateId: "login" },
-  "/dashboard": { templateId: "dashboard", init: updateDashboard },
+  "/dashboard": { templateId: "dashboard", init: refresh },
   "/credit": { templateId: "credit" },
 };
 
@@ -22,6 +25,17 @@ function navigate(path) {
   window.history.pushState({}, path, path);
   updateRoute();
 }
+
+// update state
+const updateState = (property, newData) => {
+  state = Object.freeze({
+    ...state,
+    [property]: newData,
+  });
+  console.log("state: ")
+  console.log(state);
+  localStorage.setItem(storageKey, JSON.stringify(state.account));
+};
 
 /**
  * Hàm này truy xuất phần tử trong DOM bằng getElementById; sau đó clone nội dung của nó vào app Placeholder
@@ -76,7 +90,7 @@ const register = async () => {
     console.log("Đăng ký thành công");
     console.log(response.data);
   }
-  account = response;
+  updateState("account", response.data);
   navigate("/dashboard");
 };
 
@@ -111,7 +125,7 @@ const login = async () => {
     console.log("Thông tin đăng nhâp");
     console.log(response.data);
   }
-  account = response.data;
+  updateState("account", response.data);
   navigate("/dashboard");
 };
 
@@ -140,11 +154,12 @@ const updateElement = (id, textOrNode) => {
 
 // update dashboard
 function updateDashboard() {
+  const account = state.account;
   if (!account) {
-    return navigate("/login");
+    return logout();
   }
   updateElement("description", account.description);
-  updateElement("balance", account.balance.toFixed(2));
+  updateElement("balance", Number(account.balance).toFixed(2));
   updateElement("currency", account.currency);
 
   // tạo ra DOM mới để làm việc trên đó trc khi gắn vào html DOM
@@ -159,9 +174,9 @@ function updateDashboard() {
 
 // tao transaction moi
 function createTransactionRow(transaction) {
-  const template = document.getElementById('transaction');
+  const template = document.getElementById("transaction");
   const transactionRow = template.content.cloneNode(true);
-  const tr = transactionRow.querySelector('tr');
+  const tr = transactionRow.querySelector("tr");
   tr.children[0].textContent = transaction.date;
   tr.children[1].textContent = transaction.object;
   tr.children[2].textContent = transaction.amount.toFixed(2);
@@ -169,11 +184,34 @@ function createTransactionRow(transaction) {
 }
 
 const logout = () => {
+  updateState("account", null);
   navigate("/login");
+};
+
+// hàm cập nhật dữ liệu tài khoản. nếu dữ liệu ko hợp lệ thì logout, nếu đúng thì cập nhật
+async function updateAccountData() {
+  const account = state.account;
+  if(!account) {
+    return logout();
+  }
+  const data = await getAccount(account.user);
+  if(data.error) {
+    return logout();
+  }
+  updateState('account', data.data)
+}
+
+async function refresh() {
+  await updateAccountData();
+  updateDashboard();
 }
 
 //Đảm bảo template dc gọi khi lịch sử trình duyệt thay đổi
 function init() {
+  const savedAccount = JSON.parse(localStorage.getItem(storageKey));
+  if(savedAccount) {
+    updateState('account', savedAccount);
+  }
   window.onpopstate = () => updateRoute();
   updateRoute();
 }
