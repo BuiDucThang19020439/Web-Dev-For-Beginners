@@ -1,5 +1,5 @@
 const baseUrl = "http://localhost:5000/api/";
-const storageKey = 'savedAccount';
+const storageKey = "savedAccount";
 let state = Object.freeze({
   account: null,
 });
@@ -32,7 +32,7 @@ const updateState = (property, newData) => {
     ...state,
     [property]: newData,
   });
-  console.log("state: ")
+  console.log("state: ");
   console.log(state);
   localStorage.setItem(storageKey, JSON.stringify(state.account));
 };
@@ -46,7 +46,6 @@ const updateState = (property, newData) => {
 function updateRoute() {
   const path = window.location.pathname;
   const route = routes[path];
-
   if (!route) {
     return navigate("/login");
   }
@@ -61,14 +60,7 @@ function updateRoute() {
     route.init();
   }
 
-  document.title = route.title;
-}
-
-// Ngăn chặn hành vi mặc định của sự kiện
-// Click vào link sẽ điều hướng đến trang tương ứng
-function onLinkClick(event) {
-  event.preventDefault();
-  navigate(event.target.href);
+  document.title = route.templateId.toUpperCase();
 }
 
 /**
@@ -122,11 +114,9 @@ const login = async () => {
     console.log(response.data.error);
     return updateElement("loginError", "Có lỗi xảy ra: " + response.data.error);
   } else {
-    console.log("Thông tin đăng nhâp");
-    console.log(response.data);
+    updateState("account", response.data);
+    navigate("/dashboard");
   }
-  updateState("account", response.data);
-  navigate("/dashboard");
 };
 
 /**
@@ -183,6 +173,7 @@ function createTransactionRow(transaction) {
   return transactionRow;
 }
 
+// hàm đăng xuất
 const logout = () => {
   updateState("account", null);
   navigate("/login");
@@ -191,14 +182,59 @@ const logout = () => {
 // hàm cập nhật dữ liệu tài khoản. nếu dữ liệu ko hợp lệ thì logout, nếu đúng thì cập nhật
 async function updateAccountData() {
   const account = state.account;
-  if(!account) {
+  if (!account) {
     return logout();
   }
   const data = await getAccount(account.user);
-  if(data.error) {
+  if (data.error) {
     return logout();
   }
-  updateState('account', data.data)
+  updateState("account", data.data);
+}
+
+// hiện dialog thêm giao dịch
+const showAddTransactionForm = () => {
+  document.getElementById("dialog-background").style.display = "block";
+  document.getElementById("dialog-content").style.visibility = "visible";
+};
+
+// đóng dialog thêm giao dịch
+const hideAddTransactionForm = () => {
+  document.getElementById("dialog-background").style.display = "none";
+  document.getElementById("dialog-content").style.visibility = "hidden";
+};
+// hàm submit một giao dịch
+const commitTransaction = async() => {
+  const dialogForm = document.getElementById('dialog-form');
+  const formData = new FormData(dialogForm);
+  const response = await createNewTransaction(Object.fromEntries(formData))
+  if(response.status >= 400) {
+    console.log('Có lỗi xảy ra: ');
+    console.log(response.data.error);
+    return updateElement(
+      "transactionError",
+      "Có lỗi xảy ra: " + response.data.error
+    )
+  } else {
+    console.log('giao dịch thành công');
+    console.log(response.data)
+  }
+  let newState = state.account;
+  newState.transactions.push(response.data);
+  updateState("account", newState);
+  navigate("/dashboard")
+}
+
+const createNewTransaction = async(transaction) => {
+  try {
+    return await axios.post(`${baseUrl}accounts/${state.account.user}/transactions`, {
+      date: transaction.date,
+      object: transaction.object,
+      amount: transaction.amount
+    })
+  } catch (error) {
+    return error.response;
+  }
 }
 
 async function refresh() {
@@ -209,8 +245,8 @@ async function refresh() {
 //Đảm bảo template dc gọi khi lịch sử trình duyệt thay đổi
 function init() {
   const savedAccount = JSON.parse(localStorage.getItem(storageKey));
-  if(savedAccount) {
-    updateState('account', savedAccount);
+  if (savedAccount) {
+    updateState("account", savedAccount);
   }
   window.onpopstate = () => updateRoute();
   updateRoute();
